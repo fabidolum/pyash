@@ -76,11 +76,10 @@ This example is on simple (SPICE) files, the comment is defined by a '\*' at the
 
 Each of this files has a different checksum:
 
-
-   sha256sum file0.sp file1.sp file2.sp
-   15d80aadb2b3ffe686b100f12e66ad29e83fbd7dea296a6937b2c8b986050639  file0.sp
-   1e03ad61e0826c8840d3c547ef5bd8a076b15f006c7127164fd54b8bc6214dab  file1.sp
-   2bb5821355a8bd0b639ecba2dfc543b65e68bdc12d5feaad832e24f6fb1f967e  file2.sp
+    sha256sum file0.sp file1.sp file2.sp
+    15d80aadb2b3ffe686b100f12e66ad29e83fbd7dea296a6937b2c8b986050639  file0.sp
+    1e03ad61e0826c8840d3c547ef5bd8a076b15f006c7127164fd54b8bc6214dab  file1.sp
+    2bb5821355a8bd0b639ecba2dfc543b65e68bdc12d5feaad832e24f6fb1f967e  file2.sp
 
 Now running ``pyash`` and skipping the comment lines:
 
