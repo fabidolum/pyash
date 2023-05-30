@@ -28,10 +28,15 @@ Clone the main git repository:
 
     git clone git@github.com:fabidolum/pyash.git
 
-Build the *nestor* wheel package using [poetry](https://python-poetry.org/)
+You can install and run in the [poetry](https://python-poetry.org/) envirronement:
 
     poetry install
+    poetry run pyash --help
+
+Or build the *pyash* wheel package using [poetry](https://python-poetry.org/) and install the wheel with pip:
+
     poetry build
+    python3 -m pip install --user dist/pyash-0.1.0-py3-none-any.whl
 
 
 ## Running
