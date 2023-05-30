@@ -17,11 +17,11 @@ import hashlib
 import sys
 import argparse
 
-from typing import Optional, Iterator, Callable
+from typing import Optional, Iterator, Callable, Union
 from io import BufferedReader
 
 
-def regular_computehash(filein: BufferedReader, stchar: None) -> str:
+def regular_computehash(filein: BufferedReader, stchar: Optional[bytes]) -> str:
     """Create a sha256sum, without filtering"""
     m = hashlib.sha256()
     for l in filein:
@@ -29,8 +29,10 @@ def regular_computehash(filein: BufferedReader, stchar: None) -> str:
     return f"{m.hexdigest()}"
 
 
-def computehash(filein: BufferedReader, stchar: bytes) -> str:
+def computehash(filein: BufferedReader, stchar: Optional[bytes]) -> str:
     """Create a sha256sum, filtering the comments"""
+    if stchar is None:
+        raise ValueError
     m = hashlib.sha256()
     for l in filein:
         if not l.startswith(stchar):
@@ -60,10 +62,10 @@ def checkhash(
     filein: BufferedReader, stchar: Optional[bytes]
 ) -> Iterator[tuple[bool, bytes]]:
     """Check each "checksum file" and yield the result. Comment character is enforced."""
+    compute_function: Callable[[BufferedReader, Optional[bytes]], str] = computehash
     if stchar is None:
-        compute_function: Callable[[BufferedReader, None], str] = regular_computehash
-    else:
-        compute_function: Callable[[BufferedReader, None], bytes] = computehash
+        compute_function = regular_computehash
+
     for l in filein:
         if l.startswith(b"#"):
             continue
@@ -80,11 +82,11 @@ def checkhash_autodetect(
     filein: BufferedReader, stchar: Optional[bytes]
 ) -> Iterator[tuple[bool, bytes]]:
     """Check each "checksum file" and yield the result, guessing the skip character."""
-    compute_function: Callable[[BufferedReader, None], str] = regular_computehash
+    compute_function: Callable[[BufferedReader, Optional[bytes]], str] = regular_computehash
     for l in filein:
         if l.startswith(b"# -s "):
             stchar = l.removeprefix(b"# -s ").rstrip()
-            compute_function: Callable[[BufferedReader, None], bytes] = computehash
+            compute_function = computehash
             continue
         (ch, cf) = split_line(l)
         with open(cf, "rb") as f:
@@ -93,7 +95,7 @@ def checkhash_autodetect(
             yield (True, cf)
         else:
             yield (False, cf)
-        compute_function: Callable[[BufferedReader, None], str] = regular_computehash
+        compute_function = regular_computehash
 
 
 def main(argv=None) -> int:
@@ -169,6 +171,7 @@ def main(argv=None) -> int:
             try:
                 with open(fi, "rb") as f:
                     if args.skip is not None:
+                        assert stchar is not None
                         print(f'# -s {stchar.decode(encoding="utf-8")}')
                     print(f"{compute_function(f, stchar)}  {fi}")
             except FileNotFoundError:

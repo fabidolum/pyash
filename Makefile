@@ -15,10 +15,11 @@ black:
 format: clean black
 
 tests:
-	@poetry run coverage run --source=pyash -m pytest -vv tests/
+	poetry run mypy pyash/
+	poetry run coverage run --source=pyash -m pytest -vv tests/
 
 cover: tests
-	@poetry run coverage report -m
+	poetry run coverage report -m
 
 version := $(shell poetry version -s)
 
