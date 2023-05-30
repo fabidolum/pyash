@@ -111,7 +111,7 @@ To verify a checksum, the ``--skip`` parameter is optional if the checksum file 
 
  * comments are defined by the first character(s) of the line. Therefore, there is no support for multi-lines comment, or end-of-line comments.
  * it's slow: yes, it's written in Python, much slower than [GNU sha256sum](https://www.gnu.org/software/coreutils/). 
- * this tools support only a subset of the GNU sha256sum.
+ * this tools support only a subset of the GNU sha256sum options.
 
 ## FAQ
 
